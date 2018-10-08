@@ -1,17 +1,19 @@
-@(tasks: List[Task], taskForm: Form[String])(implicit request: RequestHeader, messagesProvider: MessagesProvider)
+@(tasks: List[Task], taskForm: Form[models.Task])(implicit request: RequestHeader, messagesProvider: MessagesProvider)
 
 @import helper._
 
-@main("Todo list") {
+@main("Todo List") {
 
     <h1>@tasks.size task(s)</h1>
 
     <ul>
         @tasks.map { task =>
             <li>
-                @task.label
+                @task.name
+                @task.comments
+                @task.completed
 
-                @form(routes.HomeController.deleteTask(task.id)) {
+                @form(routes.HomeController.deleteTask(task.id.getOrElse(0))) {
                     <input type="submit" value="Delete">
                 }
             </li>
@@ -22,7 +24,9 @@
 
     @form(routes.HomeController.newTask) {
 
-        @inputText(taskForm("label"))
+        @inputText(taskForm("name"))
+        @inputText(taskForm("comments"))
+        @checkbox(taskForm("completed"))
 
         <input type="submit" value="Create">
 

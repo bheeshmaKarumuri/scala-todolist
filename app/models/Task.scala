@@ -1,13 +1,15 @@
 package models
 
-case class Task(id: Long, label: String)
+import anorm._
+
+
+case class Task(
+    id: Option[Long] = None,
+    name: String,
+    comments: String,
+    completed: Boolean)
 
 object Task {
-
-  def all(): List[Task] = Nil
-
-  def create(label: String) {}
-
-  def delete(id: Long) {}
-
+  implicit def toParameters: ToParameterList[Task] =
+    Macro.toParameters[Task]
 }

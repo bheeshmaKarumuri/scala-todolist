@@ -7,6 +7,7 @@
 *.log
 tmp
 dump
+.DS_Store
 
 # SBT
 dist
