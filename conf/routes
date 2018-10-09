@@ -19,4 +19,6 @@ GET     /assets/*file               controllers.Assets.versioned(path="/public",
 
 # API
 GET     /api/tasks              controllers.api.APITaskController.index
+POST    /tasks                  controllers.api.APITaskController.create
 GET     /api/tasks/:id          controllers.api.APITaskController.show(id: Long)
+POST    /api/tasks/:id/delete   controllers.api.APITaskController.delete(id: Long)
