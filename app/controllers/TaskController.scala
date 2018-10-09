@@ -16,6 +16,8 @@ import repositories.TaskRepository
 @Singleton
 class TaskController @Inject()(taskService: TaskRepository, val cc: ControllerComponents) extends AbstractController(cc) with I18nSupport {
 
+  val Home = Redirect(routes.TaskController.index)
+
   val taskForm = Form(
     mapping(
       "id" -> ignored(None: Option[Long]),
@@ -26,10 +28,6 @@ class TaskController @Inject()(taskService: TaskRepository, val cc: ControllerCo
   )
 
   def index = Action { implicit request: Request[AnyContent] =>
-    Redirect(routes.TaskController.tasks)
-  }
-
-  def tasks = Action { implicit request: Request[AnyContent] =>
     Ok(views.html.task.index(taskService.all(), taskForm))
   }
 
@@ -37,8 +35,11 @@ class TaskController @Inject()(taskService: TaskRepository, val cc: ControllerCo
     taskForm.bindFromRequest.fold(
       errors => BadRequest(views.html.task.index(taskService.all(), errors)),
       task => {
+        //taskService.create(task)
+        //Redirect(routes.TaskController.index)
+
         taskService.create(task)
-        Redirect(routes.TaskController.tasks)
+        Home.flashing("success" -> "Task %s has been created".format(task.name))
       }
     )
   }
@@ -56,13 +57,13 @@ class TaskController @Inject()(taskService: TaskRepository, val cc: ControllerCo
       },
       task => {
         taskService.update(id, task)
-        Redirect(routes.TaskController.tasks)
+        Redirect(routes.TaskController.index)
       }
     )
   }
 
   def delete(id: Long) = Action { implicit request: Request[AnyContent] =>
     taskService.delete(id)
-    Redirect(routes.TaskController.tasks)
+    Redirect(routes.TaskController.index)
   }
 }

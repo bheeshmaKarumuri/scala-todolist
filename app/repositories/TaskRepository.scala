@@ -45,7 +45,7 @@ class TaskRepository @Inject()(database: Database)(implicit ec: ExecutionContext
         insert into task (name, comments, completed) values (
           {name}, {comments}, {completed}
         )
-        """).bind(task).executeUpdate()
+        """).bind(task).executeInsert()
     }
   }
 

@@ -18,7 +18,7 @@ class HomeController @Inject()(taskService: TaskRepository, val cc: ControllerCo
 
 
   def index = Action { implicit request: Request[AnyContent] =>
-    Redirect(routes.TaskController.tasks)
+    Redirect(routes.TaskController.index)
   }
 
 }
