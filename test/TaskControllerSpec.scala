@@ -54,13 +54,35 @@ class TaskControllerSpec extends PlaySpec with GuiceOneAppPerSuite {
       status(result) mustBe 303
       redirectLocation(result) mustBe Some("/tasks")
       flash(result).get("success") mustBe Some("Task Test Task has been created")
+
+      // verify new task shows up on index view
+      val list = taskController.index()(FakeRequest())
+      status(list) must equal(OK)
+      contentAsString(list) must include("1 task(s)")
     }
 
     "fail trying to create a task with no data passed" in {
       val badResult = taskController.create(FakeRequest())
       status(badResult) must equal(BAD_REQUEST)
     }
+  }
 
+  "TaskController delete" should {
+
+    "successfully delete a task and redirect to the index view" in {
+      val result = taskController.delete(1).apply(FakeRequest(POST, "/tasks/1/delete"))
+      status(result) mustBe 303
+      redirectLocation(result) mustBe Some("/tasks")
+
+      // verify task does not show up on index view
+      val list = taskController.index()(FakeRequest())
+      status(list) must equal(OK)
+      contentAsString(list) must include("0 task(s)")
+    }
+    // "fail trying to delete a task that does not exist" in {
+    //   val badResult = taskController.delete(99).apply(FakeRequest(POST, "/tasks/99/delete"))
+    //   status(badResult) must equal(400)
+    // }
   }
 
 }
