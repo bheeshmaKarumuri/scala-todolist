@@ -7,11 +7,11 @@
 GET     /                       controllers.HomeController.index
 
 # Tasks
-GET     /tasks                  controllers.HomeController.tasks
-POST    /tasks                  controllers.HomeController.newTask
-POST    /tasks/:id/delete       controllers.HomeController.deleteTask(id: Long)
-POST    /tasks/:id/edit         controllers.HomeController.edit(id: Long)
-POST    /tasks/:id/update       controllers.HomeController.update(id: Long)
+GET     /tasks                  controllers.TaskController.tasks
+POST    /tasks                  controllers.TaskController.newTask
+POST    /tasks/:id/delete       controllers.TaskController.delete(id: Long)
+POST    /tasks/:id/edit         controllers.TaskController.edit(id: Long)
+POST    /tasks/:id/update       controllers.TaskController.update(id: Long)
 
 
 # Map static resources from the /public folder to the /assets URL path
