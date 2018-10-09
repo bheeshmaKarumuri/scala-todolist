@@ -19,19 +19,6 @@ class TaskRepository @Inject()(database: Database)(implicit ec: ExecutionContext
   //private val DB = dbapi.database("default")
   private val DB = database
 
-  /**
-   * Parse a Task from a ResultSet
-   */
-/*  private val simple = {
-    get[Option[Long]]("task.id") ~
-      get[String]("task.name") ~
-      get[Option[Date]]("computer.introduced") ~
-      get[Option[Date]]("computer.discontinued") ~
-      get[Option[Long]]("computer.company_id") map {
-      case id ~ name ~ introduced ~ discontinued ~ companyId =>
-        Computer(id, name, introduced, discontinued, companyId)
-    }
-  }*/
 
   val task = {
     get[Option[Long]]("id") ~
@@ -62,12 +49,12 @@ class TaskRepository @Inject()(database: Database)(implicit ec: ExecutionContext
     }
   }
 
-  def update(task: Task) {
+  def update(id: Long, task: Task) {
     DB.withConnection { implicit c =>
       SQL("""
         UPDATE task SET name={name}, comments={comments}, completed={completed}
         WHERE id = {id}
-        """).bind(task).executeUpdate()
+        """).bind(task.copy(id = Some(id))).executeUpdate()
     }
   }
 

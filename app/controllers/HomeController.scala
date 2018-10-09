@@ -24,6 +24,7 @@ class HomeController @Inject()(taskService: TaskRepository, val cc: ControllerCo
       "completed" -> boolean
     )(Task.apply)(Task.unapply)
   )
+
   def index = Action { implicit request: Request[AnyContent] =>
     Redirect(routes.HomeController.tasks)
   }
@@ -41,22 +42,24 @@ class HomeController @Inject()(taskService: TaskRepository, val cc: ControllerCo
       }
     )
   }
-/*
-  def updateTask(id: Long) = Action { implicit request =>
+
+  def edit(id: Long) = Action { implicit request =>
+    val atask = taskService.getById(id)
+    val task = atask.get
+    Ok(views.html.edit(task.id.get, taskForm.fill(task)))
+  }
+
+  def update(id: Long) = Action { implicit request =>
     taskForm.bindFromRequest.fold(
       formWithErrors => {
-        logger.warn(s"form error: $formWithErrors")
-        taskService.options.map { options =>
-          BadRequest(html.editForm(id, formWithErrors, options))
-        }
+        BadRequest(views.html.edit(id, formWithErrors))
       },
       task => {
-        taskService.update(id, task).map { _ =>
-          Home.flashing("success" -> "Task %s has been updated".format(task.name))
-        }
+        taskService.update(id, task)
+        Redirect(routes.HomeController.tasks)
       }
     )
-  }*/
+  }
 
   def deleteTask(id: Long) = Action { implicit request: Request[AnyContent] =>
     taskService.delete(id)

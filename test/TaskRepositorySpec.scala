@@ -66,7 +66,7 @@ class TaskRepositorySpec extends PlaySpec {
     "update a task" in {
       val aTask = taskService.getById(1L)
       val task = aTask.get.copy(name="Updated Name")
-      taskService.update(task)
+      taskService.update(task.id.get, task)
 
       val afterTask = taskService.getById(1L)
       val bTask = afterTask.get

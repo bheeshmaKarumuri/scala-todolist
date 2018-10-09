@@ -13,6 +13,9 @@
                 @task.comments
                 @task.completed
 
+                @form(routes.HomeController.edit(task.id.getOrElse(0))) {
+                    <input type="submit" value="Edit">
+                }
                 @form(routes.HomeController.deleteTask(task.id.getOrElse(0))) {
                     <input type="submit" value="Delete">
                 }
