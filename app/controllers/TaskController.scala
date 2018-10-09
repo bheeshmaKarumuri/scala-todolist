@@ -35,9 +35,6 @@ class TaskController @Inject()(taskService: TaskRepository, val cc: ControllerCo
     taskForm.bindFromRequest.fold(
       errors => BadRequest(views.html.task.index(taskService.all(), errors)),
       task => {
-        //taskService.create(task)
-        //Redirect(routes.TaskController.index)
-
         taskService.create(task)
         Home.flashing("success" -> "Task %s has been created".format(task.name))
       }
