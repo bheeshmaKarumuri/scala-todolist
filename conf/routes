@@ -8,7 +8,7 @@ GET     /                       controllers.HomeController.index
 
 # Tasks
 GET     /tasks                  controllers.TaskController.tasks
-POST    /tasks                  controllers.TaskController.newTask
+POST    /tasks                  controllers.TaskController.create
 POST    /tasks/:id/delete       controllers.TaskController.delete(id: Long)
 POST    /tasks/:id/edit         controllers.TaskController.edit(id: Long)
 POST    /tasks/:id/update       controllers.TaskController.update(id: Long)

@@ -33,7 +33,7 @@ class TaskController @Inject()(taskService: TaskRepository, val cc: ControllerCo
     Ok(views.html.task.index(taskService.all(), taskForm))
   }
 
-  def newTask = Action { implicit request =>
+  def create = Action { implicit request =>
     taskForm.bindFromRequest.fold(
       errors => BadRequest(views.html.task.index(taskService.all(), errors)),
       task => {

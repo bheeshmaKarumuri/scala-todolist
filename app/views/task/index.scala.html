@@ -38,7 +38,7 @@
 
     <h2>Add a new task</h2>
 
-    @form(routes.TaskController.newTask) {
+    @form(routes.TaskController.create) {
         @inputText(taskForm("name"), '_label -> "Task Name")
         @inputText(taskForm("comments"), '_label -> "Comments")
         @checkbox(taskForm("completed"), '_label -> "Completed", '_help -> "")
