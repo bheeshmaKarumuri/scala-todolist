@@ -1,5 +1,5 @@
 # Scala TODO List App
-Todo List project for Process Street Scala Test.
+Very simplistic Todo List application.
 
 ## Description
 This application implements a simple TODO list.
