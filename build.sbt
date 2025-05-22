@@ -8,12 +8,13 @@ lazy val root = (project in file(".")).enablePlugins(PlayScala)
 scalaVersion := "2.12.6"
 
 libraryDependencies += guice
-libraryDependencies += jdbc
-libraryDependencies += evolutions
 
-libraryDependencies += "org.postgresql" % "postgresql" % "42.2.5"
-//libraryDependencies += "com.h2database" % "h2" % "1.4.197"
-libraryDependencies += "org.playframework.anorm" %% "anorm" % "2.6.1"
+// MongoDB dependencies
+libraryDependencies += "org.mongodb.scala" %% "mongo-scala-driver" % "4.4.0"
+libraryDependencies += "org.mongodb.scala" %% "mongo-scala-bson" % "4.4.0"
+
+// For JSON handling
+libraryDependencies += "com.typesafe.play" %% "play-json" % "2.6.10"
 
 libraryDependencies += "org.scalatestplus.play" %% "scalatestplus-play" % "3.1.2" % Test
 
