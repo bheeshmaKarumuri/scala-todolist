@@ -1,25 +1,22 @@
-name := """todolist"""
-organization := "com.timothyfisher"
+ThisBuild / scalaVersion := "2.13.12"
 
-version := "1.0-SNAPSHOT"
+lazy val root = (project in file("."))
+  .enablePlugins(PlayScala)
+  .settings(
+    name := "scala-todolist",
+    version := "1.0-SNAPSHOT",
+    libraryDependencies ++= Seq(
+      guice,
+      "org.mongodb.scala" %% "mongo-scala-driver" % "4.11.0",
+      "org.scalatestplus.play" %% "scalatestplus-play" % "5.1.0" % Test,
+      "com.typesafe.akka" %% "akka-stream" % "2.6.20",
+      "com.typesafe.akka" %% "akka-actor-typed" % "2.6.20",
+      "com.typesafe.akka" %% "akka-serialization-jackson" % "2.6.20",
+      "com.typesafe.akka" %% "akka-slf4j" % "2.6.20"
+    )
+  )
 
-lazy val root = (project in file(".")).enablePlugins(PlayScala)
+evictionErrorLevel := Level.Warn
+mainClass := Some("controllers.Main")
 
-scalaVersion := "2.12.6"
-
-libraryDependencies += guice
-
-// MongoDB dependencies
-libraryDependencies += "org.mongodb.scala" %% "mongo-scala-driver" % "4.4.0"
-libraryDependencies += "org.mongodb.scala" %% "mongo-scala-bson" % "4.4.0"
-
-// For JSON handling
-libraryDependencies += "com.typesafe.play" %% "play-json" % "2.6.10"
-
-libraryDependencies += "org.scalatestplus.play" %% "scalatestplus-play" % "3.1.2" % Test
-
-// Adds additional packages into Twirl
-//TwirlKeys.templateImports += "com.timothyfisher.controllers._"
-
-// Adds additional packages into conf/routes
-// play.sbt.routes.RoutesKeys.routesImport += "com.timothyfisher.binders._"
+Test / javaOptions += "-Dplay.ws.enabled=false"

@@ -1,4 +1,3 @@
-
 import org.scalatestplus.play._
 import play.api.Configuration
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -7,7 +6,6 @@ import org.mongodb.scala._
 import org.mongodb.scala.bson.ObjectId
 
 class TaskRepositorySpec extends PlaySpec {
-
   // Create test configuration with MongoDB test database
   val testConfig = Configuration.from(Map(
     "mongodb.uri" -> "mongodb://localhost:27017/scala_todo_test"

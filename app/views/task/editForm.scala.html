@@ -1,0 +1,18 @@
+@(id: String, taskForm: Form[Task])(implicit request: RequestHeader, messagesProvider: play.api.i18n.MessagesProvider)
+
+@import helper._
+
+@main("Edit Task") {
+    <h1>Edit Task</h1>
+    
+    @form(routes.TaskController.update(id)) {
+        @inputText(taskForm("name"), Symbol("_label") -> "Task Name")
+        @inputText(taskForm("comments"), Symbol("_label") -> "Comments")
+        @checkbox(taskForm("completed"), Symbol("_label") -> "Completed", Symbol("_help") -> "")
+        
+        <div class="actions">
+            <input type="submit" value="Update Task" class="btn primary">
+            <a href="@routes.TaskController.index" class="btn">Cancel</a>
+        </div>
+    }
+} 

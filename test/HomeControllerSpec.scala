@@ -6,7 +6,6 @@ import play.api.test.Helpers._
 import repositories.TaskRepository
 import org.scalatestplus.play.guice._
 
-
 class HomeControllerSpec extends PlaySpec with GuiceOneAppPerSuite {
 
   def homeController = app.injector.instanceOf(classOf[HomeController])

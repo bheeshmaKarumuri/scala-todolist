@@ -35,14 +35,6 @@ class TaskRepository @Inject()(configuration: Configuration)(implicit ec: Execut
       case _: Exception => None
     }
   }
-  
-  // For backward compatibility with existing code
-  def getById(id: Long): Option[Task] = {
-    val futureResult = collection.find().toFuture()
-    val documents = await(futureResult)
-    documents.find(doc => doc.getInteger("legacy_id", 0) == id)
-      .map(Task.fromDocument)
-  }
 
   def all(): List[Task] = {
     val futureResult = collection.find().toFuture()
@@ -68,21 +60,6 @@ class TaskRepository @Inject()(configuration: Configuration)(implicit ec: Execut
       case _: Exception => // Handle invalid ID format
     }
   }
-  
-  // For backward compatibility with existing code
-  def update(id: Long, task: Task): Unit = {
-    val futureResult = collection.find(equal("legacy_id", id)).first().toFuture()
-    val document = await(futureResult)
-    if (document != null) {
-      val objectId = document.getObjectId("_id")
-      val updates = combine(
-        set("name", task.name),
-        set("comments", task.comments),
-        set("completed", task.completed)
-      )
-      await(collection.updateOne(equal("_id", objectId), updates).toFuture())
-    }
-  }
 
   def delete(id: String): Unit = {
     try {
@@ -91,10 +68,5 @@ class TaskRepository @Inject()(configuration: Configuration)(implicit ec: Execut
     } catch {
       case _: Exception => // Handle invalid ID format
     }
-  }
-  
-  // For backward compatibility with existing code
-  def delete(id: Long): Unit = {
-    await(collection.deleteOne(equal("legacy_id", id)).toFuture())
   }
 }
