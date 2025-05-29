@@ -5,13 +5,6 @@
     <div class="row mb-3">
       <div class="col-md-8">
         <h2>@tasks.size task(s)</h2>
-        @{
-          val completed = tasks.count(_.completed)
-          val percent = if (tasks.isEmpty) 0 else (completed * 100) / tasks.size
-        <div class="progress mb-2" style="height: 20px;">
-          <div class="progress-bar bg-success" role="progressbar" style="width: @percent%" aria-valuenow="@percent" aria-valuemin="0" aria-valuemax="100">@percent% Complete</div>
-        </div>
-        }
       </div>
       <div class="col-md-4 text-end">
         <input id="taskSearch" class="form-control" type="text" placeholder="Search tasks..." onkeyup="filterTasks()">
@@ -47,38 +40,16 @@
                       <i class="bi bi-pencil"></i> Edit
                     </button>
                   </form>
-                  <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal-@task.id.getOrElse("")" title="Delete Task">
-                    <i class="bi bi-trash"></i> Delete
-                  </button>
-                  <!-- Delete Modal -->
-                  <div class="modal fade" id="deleteModal-@task.id.getOrElse("")" tabindex="-1" aria-labelledby="deleteModalLabel-@task.id.getOrElse("")" aria-hidden="true">
-                    <div class="modal-dialog">
-                      <div class="modal-content">
-                        <div class="modal-header">
-                          <h5 class="modal-title" id="deleteModalLabel-@task.id.getOrElse("")">Delete Task</h5>
-                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                          Are you sure you want to delete the task: <strong>@task.name</strong>?
-                        </div>
-                        <div class="modal-footer">
-                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                          <form action="@routes.TaskController.delete(task.id.getOrElse("") )" method="POST" style="display:inline;">
-                            <button type="submit" class="btn btn-danger">Delete</button>
-                          </form>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+                  <form action="@routes.TaskController.delete(task.id.getOrElse("") )" method="POST" style="display:inline;">
+                    <button type="submit" class="btn btn-sm btn-danger" data-bs-toggle="tooltip" data-bs-placement="top" title="Delete Task">
+                      <i class="bi bi-trash"></i> Delete
+                    </button>
+                  </form>
                 </td>
             </tr>
         }
       </tbody>
     </table>
-
-    <a href="#addTaskForm" class="btn btn-success btn-lg position-fixed bottom-0 end-0 m-4" style="z-index:1000;" title="Add Task">
-      <i class="bi bi-plus-circle"></i> Add Task
-    </a>
 
     <h2 id="addTaskForm">Add a new task</h2>
     @form(routes.TaskController.create) {
