@@ -3,12 +3,14 @@ package models
 import org.mongodb.scala.bson.ObjectId
 import org.mongodb.scala.bson.collection.immutable.Document
 import play.api.libs.json._
+import scala.jdk.CollectionConverters._
 
 case class Task(
     id: Option[String] = None,
     name: String,
     comments: String,
-    completed: Boolean)
+    completed: Boolean,
+    labels: List[String] = List.empty)
 
 object Task {
   // Conversion from MongoDB document to Task
@@ -17,7 +19,8 @@ object Task {
       id = Some(doc.getObjectId("_id").toHexString),
       name = doc.getString("name"),
       comments = doc.getString("comments"),
-      completed = doc.getBoolean("completed")
+      completed = doc.getBoolean("completed"),
+      labels = Option(doc.getList("labels", classOf[String])).map(_.asScala.toList).getOrElse(List.empty)
     )
   }
   
@@ -29,6 +32,7 @@ object Task {
       .+("name" -> task.name)
       .+("comments" -> task.comments)
       .+("completed" -> task.completed)
+      .+("labels" -> task.labels)
     builder
   }
 
@@ -41,7 +45,8 @@ object Task {
         "id" -> task.id,
         "name" -> task.name,
         "comments" -> task.comments,
-        "completed" -> task.completed
+        "completed" -> task.completed,
+        "labels" -> task.labels
       )
     }
   }

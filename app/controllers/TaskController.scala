@@ -27,7 +27,8 @@ class TaskController @Inject()(
       "id" -> optional(text),
       "name" -> nonEmptyText,
       "comments" -> text,
-      "completed" -> boolean
+      "completed" -> boolean,
+      "labels" -> list(text)
     )(Task.apply)(Task.unapply)
   )
 
@@ -41,7 +42,11 @@ class TaskController @Inject()(
         BadRequest(views.html.task.index(taskRepository.all(), formWithErrors))
       },
       task => {
-        taskRepository.create(task)
+        // Convert comma-separated labels string to list
+        val labelsString = request.body.asFormUrlEncoded.getOrElse(Map.empty).getOrElse("labels", Seq("")).head
+        val labelsList = if (labelsString.trim.isEmpty) List.empty else labelsString.split(",").map(_.trim).toList
+        val taskWithLabels = task.copy(labels = labelsList)
+        taskRepository.create(taskWithLabels)
         Home
       }
     )
@@ -62,7 +67,11 @@ class TaskController @Inject()(
         BadRequest(views.html.task.editForm(id, formWithErrors))
       },
       task => {
-        taskRepository.update(id, task)
+        // Convert comma-separated labels string to list
+        val labelsString = request.body.asFormUrlEncoded.getOrElse(Map.empty).getOrElse("labels", Seq("")).head
+        val labelsList = if (labelsString.trim.isEmpty) List.empty else labelsString.split(",").map(_.trim).toList
+        val taskWithLabels = task.copy(labels = labelsList)
+        taskRepository.update(id, taskWithLabels)
         Redirect(routes.TaskController.index)
       }
     )

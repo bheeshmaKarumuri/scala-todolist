@@ -3,11 +3,12 @@
 @import helper._
 
 @main("Edit Task") {
-    <h1>Edit Task</h1>
+    <!-- <h1>Edit Task</h1> -->
     
     @form(routes.TaskController.update(id)) {
         @inputText(taskForm("name"), Symbol("_label") -> "Task Name")
         @inputText(taskForm("comments"), Symbol("_label") -> "Comments")
+        @inputText(taskForm("labels"), Symbol("_label") -> "Labels", Symbol("_placeholder") -> "Enter labels (comma-separated)", Symbol("value") -> taskForm("labels").value.map(_.mkString(",")).getOrElse(""))
         @checkbox(taskForm("completed"), Symbol("_label") -> "Completed", Symbol("_help") -> "")
         
         <div class="actions">

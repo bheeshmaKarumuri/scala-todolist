@@ -1,0 +1,237 @@
+@(tasks: List[Task], completedTasks: Int, pendingTasks: Int, tasksPerLabel: List[(String, Int)], completedPerLabel: List[(String, Int)], pendingPerLabel: List[(String, Int)])(implicit request: RequestHeader, messagesProvider: MessagesProvider)
+
+@main("Task Dashboard") {
+    <div class="container py-4">
+        <!-- Header Section -->
+        <div class="row mb-4">
+            <div class="col-md-12">
+                <h1 class="display-4">
+                    <i class="bi bi-graph-up me-3"></i>Task Dashboard
+                    <span class="badge bg-primary ms-2"><i class="bi bi-bar-chart-line me-1"></i>Analytics</span>
+                </h1>
+                <p class="lead"><i class="bi bi-info-circle me-2"></i>Visualize your task completion progress and statistics</p>
+                <hr class="my-4">
+                <div class="d-flex justify-content-between">
+                    <a href="@routes.TaskController.index" class="btn btn-outline-primary"> 
+                        <i class="bi bi-arrow-left me-2"></i>Back to Tasks
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Summary Cards -->
+        <div class="row mb-4">
+            <div class="col-md-4">
+                <div class="card bg-primary text-white">
+                    <div class="card-body">
+                        <h5 class="card-title"><i class="bi bi-list-check me-2"></i>Total Tasks</h5>
+                        <h2 class="display-4"><i class="bi bi-hash me-2"></i>@tasks.size</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card bg-success text-white">
+                    <div class="card-body">
+                        <h5 class="card-title"><i class="bi bi-check-circle me-2"></i>Completed</h5>
+                        <h2 class="display-4"><i class="bi bi-check2-all me-2"></i>@completedTasks</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card bg-warning text-dark">
+                    <div class="card-body">
+                        <h5 class="card-title"><i class="bi bi-hourglass-split me-2"></i>Pending</h5>
+                        <h2 class="display-4"><i class="bi bi-clock me-2"></i>@pendingTasks</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Charts Row -->
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-white">
+                        <h5 class="card-title mb-0">
+                            <i class="bi bi-pie-chart-fill me-2"></i>Task Completion Status
+                            <small class="text-muted ms-2"><i class="bi bi-info-circle"></i> Overall progress</small>
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="completionChart" width="400" height="300"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-white">
+                        <h5 class="card-title mb-0">
+                            <i class="bi bi-bar-chart-fill me-2"></i>Tasks by Label
+                            <small class="text-muted ms-2"><i class="bi bi-info-circle"></i> Distribution</small>
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="labelChart" width="400" height="300"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Detailed Charts Row -->
+        <div class="row mb-4">
+            <div class="col-md-12">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-white">
+                        <h5 class="card-title mb-0">
+                            <i class="bi bi-bar-chart-steps me-2"></i>Completion Status by Label
+                            <small class="text-muted ms-2"><i class="bi bi-info-circle"></i> Detailed breakdown</small>
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="labelCompletionChart" width="400" height="300"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Data preparation for charts
+        const completionData = {
+            labels: ['Completed', 'Pending'],
+            datasets: [{
+                data: [@completedTasks, @pendingTasks],
+                backgroundColor: ['#28a745', '#ffc107'],
+                hoverBackgroundColor: ['#218838', '#e0a800']
+            }]
+        };
+        
+        const labelNames = [
+            @for(label <- tasksPerLabel) {
+                '@label._1',
+            }
+        ];
+        const labelCounts = [
+            @for(label <- tasksPerLabel) {
+                @label._2,
+            }
+        ];
+        
+        const labelData = {
+            labels: labelNames,
+            datasets: [{
+                label: 'Number of Tasks',
+                data: labelCounts,
+                backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1
+            }]
+        };
+        
+        // Data for completion status by label
+        const completedByLabel = [
+            @for(label <- completedPerLabel) {
+                @label._2,
+            }
+        ];
+        const pendingByLabel = [
+            @for(label <- pendingPerLabel) {
+                @label._2,
+            }
+        ];
+        
+        const labelCompletionData = {
+            labels: labelNames,
+            datasets: [
+                {
+                    label: 'Completed',
+                    data: completedByLabel,
+                    backgroundColor: 'rgba(40, 167, 69, 0.6)',
+                    borderColor: 'rgba(40, 167, 69, 1)',
+                    borderWidth: 1
+                },
+                {
+                    label: 'Pending',
+                    data: pendingByLabel,
+                    backgroundColor: 'rgba(255, 193, 7, 0.6)',
+                    borderColor: 'rgba(255, 193, 7, 1)',
+                    borderWidth: 1
+                }
+            ]
+        };
+        
+        // Initialize charts when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            // Pie chart for completion status
+            const completionCtx = document.getElementById('completionChart').getContext('2d');
+            new Chart(completionCtx, {
+                type: 'pie',
+                data: completionData,
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const label = context.label || '';
+                                    const value = context.raw || 0;
+                                    const total = context.dataset.data.reduce((acc, val) => acc + val, 0);
+                                    const percentage = Math.round((value / total) * 100);
+                                    return `${label}: ${value} (${percentage}%)`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Bar chart for tasks by label
+            const labelCtx = document.getElementById('labelChart').getContext('2d');
+            new Chart(labelCtx, {
+                type: 'bar',
+                data: labelData,
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                precision: 0
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+            
+            // Stacked bar chart for completion status by label
+            const labelCompletionCtx = document.getElementById('labelCompletionChart').getContext('2d');
+            new Chart(labelCompletionCtx, {
+                type: 'bar',
+                data: labelCompletionData,
+                options: {
+                    responsive: true,
+                    scales: {
+                        x: {
+                            stacked: true
+                        },
+                        y: {
+                            stacked: true,
+                            beginAtZero: true,
+                            ticks: {
+                                precision: 0
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+}

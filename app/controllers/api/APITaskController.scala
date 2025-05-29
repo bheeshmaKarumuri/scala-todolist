@@ -23,7 +23,8 @@ class APITaskController @Inject()(
       "id" -> optional(text),
       "name" -> nonEmptyText,
       "comments" -> text,
-      "completed" -> boolean
+      "completed" -> boolean,
+      "labels" -> list(text)
     )(Task.apply)(Task.unapply)
   )
 

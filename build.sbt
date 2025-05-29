@@ -17,6 +17,5 @@ lazy val root = (project in file("."))
   )
 
 evictionErrorLevel := Level.Warn
-mainClass := Some("controllers.Main")
 
 Test / javaOptions += "-Dplay.ws.enabled=false"

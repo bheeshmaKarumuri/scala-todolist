@@ -1,0 +1,65 @@
+@import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css");
+
+@font-face {
+  font-family: "bootstrap-icons";
+  src: url("../fonts/bootstrap-icons.woff2") format("woff2"),
+       url("../fonts/bootstrap-icons.woff") format("woff");
+}
+
+.bi::before,
+[class^="bi-"]::before,
+[class*=" bi-"]::before {
+  display: inline-block;
+  font-family: bootstrap-icons !important;
+  font-style: normal;
+  font-weight: normal !important;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+  vertical-align: -.125em;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Navigation Icons */
+.bi-check2-square::before { content: "\f26d"; }
+.bi-list-task::before { content: "\f6b3"; }
+.bi-graph-up::before { content: "\f4cb"; }
+
+/* Dashboard Icons */
+.bi-pie-chart-fill::before { content: "\f6f9"; }
+.bi-bar-chart-fill::before { content: "\f2c7"; }
+.bi-bar-chart-steps::before { content: "\f2c9"; }
+.bi-bar-chart-line::before { content: "\f2c6"; }
+.bi-info-circle::before { content: "\f430"; }
+.bi-hash::before { content: "\f4d1"; }
+.bi-check2-all::before { content: "\f26b"; }
+.bi-clock::before { content: "\f294"; }
+
+/* Task List Icons */
+.bi-check-circle-fill::before { content: "\f26a"; }
+.bi-hourglass-split::before { content: "\f4de"; }
+.bi-pencil-square::before { content: "\f4cb"; }
+.bi-trash-fill::before { content: "\f5de"; }
+.bi-tag-fill::before { content: "\f5ba"; }
+.bi-tags::before { content: "\f5bd"; }
+.bi-card-text::before { content: "\f2c0"; }
+.bi-chat-left-text::before { content: "\f2c2"; }
+.bi-check2-circle::before { content: "\f26c"; }
+.bi-gear::before { content: "\f3e4"; }
+.bi-plus-circle::before { content: "\f4fe"; }
+.bi-search::before { content: "\f52a"; }
+.bi-arrow-left::before { content: "\f12a"; }
+
+/* Margin Utilities */
+.me-1 {
+  margin-right: 0.25rem !important;
+}
+
+.me-2 {
+  margin-right: 0.5rem !important;
+}
+
+.me-3 {
+  margin-right: 1rem !important;
+}
