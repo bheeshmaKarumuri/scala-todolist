@@ -19,7 +19,10 @@
             <div class="col-md-4">
                 <div class="input-group">
                     <span class="input-group-text"><i class="bi bi-search"></i></span>
-                    <input id="taskSearch" class="form-control" type="text" placeholder="Search tasks..." onkeyup="filterTasks()">
+                    <input type="text" class="form-control" id="searchInput" placeholder="Search tasks...">
+                    <button class="btn btn-outline-secondary" type="button" id="clearButton">
+                        <i class="bi bi-x-lg"></i>
+                    </button>
                 </div>
             </div>
         </div>
@@ -31,7 +34,7 @@
             </div>
             <div class="card-body p-0">
                 <div class="table-responsive">
-                    <table class="table table-hover mb-0" id="tasksTable">
+                    <table class="table table-hover mb-0" id="taskTable">
                         <thead class="table-light">
                             <tr>
                                 <th scope="col" class="ps-4"><i class="bi bi-hash me-1"></i>ID</th>
@@ -143,34 +146,55 @@
     </div>
 
     <script>
-        // Bootstrap tooltips
-        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-            return new bootstrap.Tooltip(tooltipTriggerEl);
-        });
+        // Wait for the document to be fully loaded
+        window.onload = function() {
+            // Get the search input and clear button
+            var searchInput = document.getElementById('searchInput');
+            var clearButton = document.getElementById('clearButton');
+            var taskTable = document.getElementById('taskTable');
+            var taskCount = @tasks.size;
 
-        // Filter tasks with debounce
-        let timeout = null;
-        function filterTasks() {
-            clearTimeout(timeout);
-            timeout = setTimeout(() => {
-                var input = document.getElementById('taskSearch');
-                var filter = input.value.toLowerCase();
-                var table = document.getElementById('tasksTable');
-                var trs = table.getElementsByTagName('tr');
-                
-                for (var i = 1; i < trs.length; i++) {
-                    var tds = trs[i].getElementsByTagName('td');
-                    var show = false;
-                    for (var j = 0; j < tds.length; j++) {
-                        if (tds[j].textContent.toLowerCase().indexOf(filter) > -1) {
-                            show = true;
-                            break;
-                        }
-                    }
-                    trs[i].style.display = show ? '' : 'none';
+            // Function to perform the search
+            function performSearch() {
+                var searchText = searchInput.value.toLowerCase();
+                var rows = taskTable.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+                var visibleCount = 0;
+
+                for (var i = 0; i < rows.length; i++) {
+                    var row = rows[i];
+                    var text = row.textContent.toLowerCase();
+                    var isVisible = text.includes(searchText);
+                    row.style.display = isVisible ? '' : 'none';
+                    if (isVisible) visibleCount++;
                 }
-            }, 300);
-        }
+
+                // Update the task count
+                var countBadge = document.querySelector('.badge.bg-primary');
+                if (countBadge) {
+                    countBadge.innerHTML = '<i class="bi bi-list-check me-1"></i>' + visibleCount + ' task(s)';
+                }
+            }
+
+            // Add event listener for search input
+            if (searchInput) {
+                searchInput.addEventListener('keyup', performSearch);
+                searchInput.addEventListener('input', performSearch);
+            }
+
+            // Add event listener for clear button
+            if (clearButton) {
+                clearButton.addEventListener('click', function() {
+                    searchInput.value = '';
+                    performSearch();
+                    searchInput.focus();
+                });
+            }
+
+            // Initialize tooltips
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl);
+            });
+        };
     </script>
 }
